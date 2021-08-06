@@ -1,0 +1,29 @@
+---
+- name: Deploy VM
+  hosts: all
+  vars:
+    vcenter_hostname: 10.6.100.160
+    vcenter_username: administrator@vsphere.local
+    vcenter_password: P@ssw0rd
+  connection: local
+  tasks:
+    - name: Clone VM from CentOS Template
+      vmware_guest:
+        hostname: "{{ vcenter_hostname }}"
+        username: "{{ vcenter_username }}"
+        password: "{{ vcenter_password }}"
+        validate_certs: no
+        datacenter: Datacenter-ITOA
+        state: present
+        folder: /Datacenter-ITOA/vm/ITOA-Test
+        name: Clone-CentOS1
+        template: CentOS83_Template
+        datastore: Local_Datastore_206_SSD
+        networks:
+        - name: Vlan_150
+          start_connected: yes
+          device_type: vmxnet3
+          ip: 80.80.80.100
+          netmask: 255.255.255.0  
+          gateway: 80.80.80.1        
+        wait_for_ip_address: true
